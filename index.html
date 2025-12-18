@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Happy Birthday MS 🎂</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brown-100: #f6efe8;
+    --brown-200: #e6d8c8;
+    --brown-300: #caa98a;
+    --brown-400: #a66f3a;
+    --brown-500: #7d4410;
+    --accent: #ffdca8;
+    --glass: rgba(255,255,255,0.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background: linear-gradient(180deg,var(--brown-100), #efe6db 40%, #f5efe9 100%);
+    color:#2b1b10;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 22px;
+    gap:12px;
+    position:sticky;
+    top:0;
+    background: linear-gradient(180deg, #6b4d3b, rgba(255,255,255,0.2));
+    backdrop-filter: blur(6px);
+  }
+
+  .brand{
+    display:flex;align-items:center;gap:12px;
+  }
+  .logo{
+    width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--brown-400),var(--brown-500));
+    display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;font-size:20px;box-shadow: 0 6px 18px rgba(125,68,16,0.18);
+  }
+  h1{margin:0;font-size:20px;}
+
+  .controls{display:flex;gap:10px;align-items:center;}
+  .btn{
+    background:var(--brown-500);color:var(--accent);border:none;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;
+    box-shadow:0 6px 12px rgba(125,68,16,0.15);
+  }
+  .btn.ghost{background:transparent;color:var(--brown-500);border:1px solid rgba(125,68,16,0.12)}
+
+  main{
+    max-width:1100px;margin:18px auto;padding:18px;
+  }
+
+  .hero{
+    display:grid;grid-template-columns: 1fr 380px;gap:20px;align-items:start;
+  }
+  @media (max-width:880px){
+    .hero{grid-template-columns:1fr; padding-bottom:40px}
+  }
+
+  .card{
+    border-radius:18px; overflow:hidden; box-shadow: 0 20px 40px rgba(16,12,9,0.08);
+    background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));
+  }
+  .slideshow{
+    position:relative;height:550px;background:#000;
+  }
+  @media (max-width:880px){ .slideshow{height:420px} }
+  .slide{
+    position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .9s ease;
+    transform:scale(1.02);
+  }
+  .slide.show{opacity:1;transform:scale(1)}
+  .slide::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.28));}
+
+  .slideshow-controls{
+    position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;gap:10px;align-items:center;
+  }
+  .dots{display:flex;gap:8px}
+  .dot{width:10px;height:10px;border-radius:6px;background:rgba(255,255,255,0.4);cursor:pointer}
+  .dot.active{background:var(--accent);box-shadow:0 4px 10px rgba(0,0,0,0.25)}
+
+  .slide-top-left{
+    position:absolute;left:20px;top:20px;background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));padding:10px 14px;border-radius:10px;color:white;font-weight:600;
+    backdrop-filter: blur(6px);
+  }
+
+  .panel{
+    padding:20px;border-radius:16px;background:linear-gradient(180deg,var(--brown-100), #6b4d3b); box-shadow: 0 12px 30px rgba(16,12,9,0.06);
+    min-height:430px;
+  }
+  .greeting{font-size:28px;margin:0 0 8px 0;color:var(--brown-500)}
+  .sub{margin:0;color:#6b4d3b}
+
+  #fireworks{
+    position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:30;
+  }
+
+  footer{
+    text-align:center;padding:24px 18px;color:#7f5d49;font-size:15px;
+  }
+
+  .small{font-size:13px;color:#5b3f31}
+  input[type="range"]{width:130px}
+</style>
+</head>
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<header>
+  <div class="brand">
+    <div class="logo">MS</div>
+    <div>
+      <h1>Happy Birthday — MS✨</h1>
+      <div class="small">Wish you Many More happy Returns Of The Day🎉</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" class="btn">Play</button>
+    <button id="pauseBtn" class="btn ghost">Pause</button>
+    <label class="small" style="margin-left:6px">Volume</label>
+    <input id="vol" type="range" min="0" max="1" step="0.01" value="0.65">
+    <button id="toggleFire" class="btn ghost">Fireworks ✨</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+
+    <div class="card">
+      <div class="slideshow" id="slideshow">
+        <div class="slide-top-left">Happy Birthday 🎂</div>
+
+        <div class="slide" id="s1"></div>
+        <div class="slide" id="s2"></div>
+        <div class="slide" id="s3"></div>
+        <div class="slide" id="s4"></div>
+        <div class="slide" id="s5"></div>
+        <div class="slide" id="s6"></div>
+        <div class="slide" id="s7"></div>
+        <div class="slide" id="s8"></div>
+        <div class="slide" id="s9"></div>
+
+        <div class="slideshow-controls">
+          <div style="display:flex;gap:10px">
+            <button class="btn ghost" id="prev">Prev</button>
+            <button class="btn ghost" id="next">Next</button>
+          </div>
+          <div class="dots" id="dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <h2 class="greeting">To MS — 🤎✨</h2>
+      <p class="sub" style="color: #000;">Wishing you joy, laughter, love, and the sweetest moments today and always 🤎
+You are more than enough. I am so happy to have you as a friend in my life ✨
+You are a gem, man 💎 So don’t lose your forever shine for some temporary mood swings.
+Whenever life gets hard, just come to me. I am here for you — we will play tic-tac-toe, find movie songs by lyrics, and then roast each other.
+Then we will be happy 😂
+
+Take good care of your health because I will keep testing your patience like always!!
+I will always pray to God to keep you happy and healthy ✨
+
+And I wish you to become all that you dream of and have a beautiful life now and forever.
+So enjoy your day to the fullest because you deserve it 🤎
+
+You deserve everything.
+Cheers to you and your presence in this world! 🎉
+      </p>
+    </aside>
+
+  </div>
+</main>
+
+<footer>
+  — Best Wishes, Your Friend 🤎
+</footer>
+
+<audio id="bgAudio" preload="auto">
+  <source src="uyire.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const imageList = [
+  'images/1.jpg','images/2.jpg','images/3.jpg','images/4.jpg','images/5.jpg',
+  'images/6.jpg','images/7.jpg','images/8.jpg','images/9.jpg'
+].filter(Boolean);
+
+const slides = document.querySelectorAll('.slide');
+for (let i=0;i<slides.length;i++){
+  const img = imageList[i % imageList.length];
+  slides[i].style.backgroundImage = `url('${img}')`;
+}
+
+let idx = 0;
+const total = slides.length;
+const dotsContainer = document.getElementById('dots');
+
+for (let i=0;i<total;i++){
+  const d = document.createElement('div'); d.className='dot'; d.dataset.i=i;
+  d.addEventListener('click', ()=> goTo(i));
+  dotsContainer.appendChild(d);
+}
+function refresh(){
+  slides.forEach((s, i)=> s.classList.toggle('show', i===idx));
+  document.querySelectorAll('.dot').forEach((d,i)=> d.classList.toggle('active', i===idx));
+}
+function next(){ idx=(idx+1)%total; refresh(); }
+function prev(){ idx=(idx-1+total)%total; refresh(); }
+function goTo(i){ idx=i%total; refresh(); }
+
+document.getElementById('next').onclick = ()=>{ next(); resetAuto(); }
+document.getElementById('prev').onclick = ()=>{ prev(); resetAuto(); }
+
+refresh();
+
+let autoTimer = setInterval(next, 4500);
+function resetAuto(){ clearInterval(autoTimer); autoTimer = setInterval(next, 4500); }
+
+const audio = document.getElementById('bgAudio');
+const playBtn = document.getElementById('playBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+const vol = document.getElementById('vol');
+
+playBtn.onclick = async () => {
+  try { await audio.play(); }
+  catch(e){}
+};
+pauseBtn.onclick = ()=>{ audio.pause(); }
+vol.addEventListener('input', ()=> { audio.volume = Number(vol.value); });
+
+/* 🎵 AUTO-PLAY MUSIC ON LOAD */
+/* 🎵 AUTO-PLAY & LOOP MUSIC ON PAGE LOAD */
+window.addEventListener("load", () => {
+
+  audio.loop = true;       // ensure loop is ALWAYS on
+  audio.volume = Number(vol.value);
+
+  const tryPlay = () => {
+    audio.play().catch(() => {
+      // Autoplay blocked → enable on first user interaction
+      const unlock = () => {
+        audio.play();
+        document.removeEventListener("click", unlock);
+        document.removeEventListener("touchstart", unlock);
+        document.removeEventListener("mousemove", unlock);
+      };
+      document.addEventListener("click", unlock);
+      document.addEventListener("touchstart", unlock);
+      document.addEventListener("mousemove", unlock);
+    });
+  };
+
+  tryPlay();
+});
+
+
+/* ---------------- FIREWORKS ---------------- */
+const fireCanvas = document.getElementById('fireworks');
+const fwCtx = fireCanvas.getContext('2d');
+
+function resizeFW(){ fireCanvas.width = innerWidth; fireCanvas.height = innerHeight; }
+resizeFW(); window.addEventListener('resize', resizeFW);
+
+const particles = [];
+let fireOn = true; // ENABLED BY DEFAULT
+
+class Particle {
+  constructor(x,y,col){
+    this.x=x;this.y=y;this.vx=(Math.random()*6)-3;this.vy=(Math.random()*-5)-4;
+    this.life=40+Math.random()*40;this.age=0;this.col=col;this.size=2+Math.random()*3;
+  }
+  step(){ this.vy+=0.12; this.x+=this.vx; this.y+=this.vy; this.age++; }
+  draw(ctx){
+    ctx.beginPath();
+    ctx.fillStyle=this.col;
+    ctx.globalAlpha=Math.max(0,1-this.age/this.life);
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
+}
+
+function burst(x,y){
+  const colors = ['#ffd194','#ffc38b','#ffa07a','#ffddc1','#ffd6a5'];
+  for(let i=0;i<45;i++){
+    particles.push(new Particle(x,y, colors[Math.floor(Math.random()*colors.length)]));
+  }
+}
+
+let lastBurst = 0;
+function loop(){
+  if (!fireOn) return;
+  fwCtx.clearRect(0,0,fireCanvas.width, fireCanvas.height);
+  const now = Date.now();
+  if (now - lastBurst > 800) {
+    lastBurst = now;
+    burst(80 + Math.random()*(fireCanvas.width-160), 80 + Math.random()*(fireCanvas.height/1.6));
+  }
+  for (let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.step();
+    p.draw(fwCtx);
+    if (p.age > p.life) particles.splice(i,1);
+  }
+  requestAnimationFrame(loop);
+}
+
+/* AUTO START FIREWORKS ON LOAD */
+window.addEventListener("load", () => {
+  fireOn = true;
+  document.getElementById("toggleFire").classList.add("active");
+  loop();
+});
+
+document.getElementById('toggleFire').onclick = ()=>{
+  fireOn = !fireOn;
+  document.getElementById("toggleFire").classList.toggle("active");
+  if (fireOn) loop();
+};
+
+document.addEventListener('keydown', (e)=>{
+  if (e.key === 'ArrowRight') { next(); resetAuto(); }
+  if (e.key === 'ArrowLeft') { prev(); resetAuto(); }
+});
+</script>
+
+</body>
+</html>
